@@ -1,5 +1,5 @@
 // Este archivo utilizara Sequelize para inicializar la conexion, 
-// leyendo las variaables del env.
+// leyendo las variables del env.
 
 // Importar dependencias
 const { Sequelize } = require('sequelize');

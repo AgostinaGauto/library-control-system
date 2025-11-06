@@ -1,8 +1,8 @@
 /*
 
-Este código configura Passport.js, un middleware de autenticación para Node.js,
+Este código configura Passport, un middleware de autenticación para Node.js,
 utilizando la estrategia Local (autenticación basada en usuario y contraseña)
-y el módulo bcryptjs para manejar el hashing de contraseñas (hashing hace referencia a la encriptacion de contraseñas).
+y el módulo bcrypt para manejar el hashing de contraseñas (hashing hace referencia a la encriptacion de contraseñas).
 */
 const passport = require('passport');
 /*
@@ -14,7 +14,7 @@ con nombre de usuario y contraseña.
 const LocalStrategy = require('passport-local').Strategy;
 /*
 Importa la librería bcryptjs, que se utiliza para comparar la contraseña 
-ingresada por el usuario con la versión hashed (cifrada) 
+ingresada por el usuario con la versión hasheada (cifrada) 
 almacenada en la base de datos.
 */
 const bcrypt = require('bcryptjs');
