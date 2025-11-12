@@ -1,0 +1,87 @@
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <div class="card shadow-lg mt-4">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0"><i class="fas fa-hand-holding"></i> Registrar Nuevo Préstamo</h3>
+            </div>
+            <div class="card-body">
+
+                {{> messages}}
+
+                <!-- La acción apunta a POST /prestamos, que llama a createPrestamo -->
+                <form action="/loans" method="POST">
+                    
+                    <!-- SECCIÓN 1: SELECCIÓN DE SOCIO -->
+                    <h5 class="mb-3 text-success border-bottom pb-2">Datos del Socio</h5>
+                    <div class="mb-4">
+                        <label for="id_socio" class="form-label">Socio Solicitante (*)</label>
+                        <select id="id_socio" name="id_socio" class="form-select" required>
+                            <option value="" disabled selected>Seleccione un socio...</option>
+                            {{#each socios}}
+                            <option value="{{id_socio}}">{{nomyape}} (ID: {{id_socio}})</option>
+                            {{/each}}
+                        </select>
+                        {{#unless socios}}
+                            <div class="alert alert-warning mt-2" role="alert">
+                                No hay socios registrados. Registre un socio para continuar.
+                            </div>
+                        {{/unless}}
+                    </div>
+                    
+                    <!-- SECCIÓN 2: SELECCIÓN DE LIBROS -->
+                    <h5 class="mb-3 text-success border-bottom pb-2">Selección de Libros (Disponibles)</h5>
+                    
+                    {{#if libros}}
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <table class="table table-sm table-striped table-hover">
+                                <thead class="table-light sticky-top">
+                                    <tr>
+                                        <th style="width: 5%;"></th>
+                                        <th style="width: 30%;">Título</th>
+                                        <th style="width: 25%;">Autor</th>
+                                        <th style="width: 25%;">Editorial</th>
+                                        <th style="width: 15%;" class="text-center">ID Libro</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each libros}}
+                                    <tr>
+                                        <td>
+                                            <!-- IMPORTANTE: Usamos el mismo nombre 'id_libros_array[]'
+                                                para que Express recoja todos los IDs seleccionados
+                                                como un array en req.body.id_libros_array. -->
+                                            <input type="checkbox" name="id_libros_array[]" value="{{id_libro}}" class="form-check-input">
+                                        </td>
+                                        <td>{{titulo}}</td>
+                                        <td>{{autor}}</td>
+                                        <td>{{editorial}}</td>
+                                        <td class="text-center">{{id_libro}}</td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-text mt-3">
+                            Seleccione uno o más libros marcando la casilla. Sólo se muestran libros con estado "en biblioteca".
+                        </div>
+                    {{else}}
+                        <div class="alert alert-info" role="alert">
+                            No hay libros disponibles en este momento (estado "en biblioteca") para prestar.
+                        </div>
+                    {{/if}}
+
+                    <p class="text-muted mt-4">(*) Campos obligatorios.</p>
+
+                    <!-- Botones de Acción -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="/loans" class="btn btn-secondary">Cancelar</a>
+                        <!-- Deshabilita el botón si no hay libros o socios -->
+                        <button type="submit" class="btn btn-success" {{#unless (and socios libros)}}disabled{{/unless}}>
+                            <i class="fas fa-save"></i> Registrar Préstamo
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

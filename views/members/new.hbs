@@ -1,0 +1,40 @@
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card shadow mt-4">
+            <div class="card-header text-white bg-primary">
+                <h4 class="mb-0">Registrar Nuevo Socio</h4>
+            </div>
+            <div class="card-body">
+                {{> messages}}
+                
+                <form action="/members" method="POST">
+                    <div class="mb-3">
+                        <label for="nomyape" class="form-label">Nombre y Apellido (*)</label>
+                        <input type="text" name="nomyape" id="nomyape" class="form-control" required autofocus>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email (*)</label>
+                        <input type="email" name="email" id="email" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="text" name="telefono" id="telefono" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
+                        {{!-- Usamos input type="date" para facilitar la captura --}}
+                        <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" class="form-control">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success d-block w-100">
+                        <i class="fas fa-save"></i> Guardar Socio
+                    </button>
+                    <a href="/members" class="btn btn-secondary d-block w-100 mt-2">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,93 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Gestión de Socios</h2>
+            <a href="/members/new" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Nuevo Socio
+            </a>
+        </div>
+        
+     
+
+        {{#if socios}}
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nombre y Apellido</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>F. Nacimiento</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each socios}}
+                            <tr>
+                                <td>{{nomyape}}</td>
+                                <td>{{email}}</td>
+                                <td>{{telefono}}</td>
+                                <td>{{fecha_nacimiento_fmt}}</td>
+                                <td>
+                                    <!-- Botón Editar con Texto -->
+                                    <a href="/members/edit/{{id_socio}}" class="btn btn-sm btn-info me-2" title="Editar">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
+                                    
+                                    <!-- Botón Eliminar con Texto -->
+                                    <button class="btn btn-sm btn-danger delete-btn" 
+                                            data-id="{{id_socio}}" 
+                                            data-nombre="{{nomyape}}"
+                                            title="Eliminar">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {{else}}
+        <div class="alert alert-warning text-center" role="alert">
+            No hay socios registrados. ¡Crea el primero!
+        </div>
+        {{/if}}
+    </div>
+</div>
+
+{{!-- Script para manejar la eliminación con SweetAlert o modal --}}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const socioId = e.currentTarget.getAttribute('data-id');
+                const socioNombre = e.currentTarget.getAttribute('data-nombre');
+
+                // Usar confirmación nativa o SweetAlert si lo tienes
+                if (confirm(`¿Estás seguro de que deseas eliminar al socio "${socioNombre}"? Esta acción es irreversible y no se permite si tiene préstamos activos.`)) {
+                    // Crear un formulario para enviar la solicitud DELETE
+                    const form = document.createElement('form');
+                    form.action = '/members/' + socioId + '?_method=DELETE';
+                    form.method = 'POST';
+                    form.style.display = 'none';
+
+                    // Campo oculto para simular el método DELETE (requiere el middleware method-override)
+                    const methodField = document.createElement('input');
+                    methodField.setAttribute('type', 'hidden');
+                    methodField.setAttribute('name', '_method');
+                    methodField.setAttribute('value', 'DELETE');
+                    form.appendChild(methodField);
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>

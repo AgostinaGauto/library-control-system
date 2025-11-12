@@ -30,6 +30,11 @@ const Usuario = sequelize.define('Usuario', {
 // Sincronizar (crear la tabla si no existe).
 // **¡Importante!** Solo la primera vez, o si no tenés un sistema de migraciones.
 // En producción, se recomienda usar migraciones.
-Usuario.sync({ force: false }); 
+// Sincronizar (crear la tabla si no existe).
+// **¡Importante!** Cambia 'force: false' a 'force: true' TEMPORALMENTE
+Usuario.sync({ force: false }) 
+    .then(() => console.log('Tabla Usuario recreada (FORCE: TRUE)'))
+    .catch(err => console.error('Error al recrear tabla Usuario:', err));
+
 
 module.exports = Usuario;

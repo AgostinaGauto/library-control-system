@@ -7,7 +7,8 @@
             </div>
             <div class="card-body">
                 <div class="row row-cols-1 row-cols-md-3 g-4">
-                    
+
+                    {{!-- Módulo de Libros (OK) --}}
                     <div class="col">
                         <div class="card h-100 border-success">
                             <div class="card-body text-center">
@@ -19,29 +20,34 @@
                         </div>
                     </div>
 
+                    {{!-- Módulo de Socios (CORREGIDO) --}}
                     <div class="col">
-                        <div class="card h-100 border-secondary">
+                        <div class="card h-100 border-primary">
                             <div class="card-body text-center">
-                                <i class="fas fa-users fa-3x text-secondary mb-3"></i>
+                                <i class="fas fa-users fa-3x text-primary mb-3"></i>
                                 <h5 class="card-title">Gestión de Socios</h5>
                                 <p class="card-text">Administración de usuarios y miembros de la biblioteca.</p>
-                                <button class="btn btn-secondary mt-2" disabled>Próximamente</button>
+                                {{!-- CAMBIO CLAVE: Activamos el enlace --}}
+                                <a href="/members" class="btn btn-primary mt-2">Ir a Socios</a>
                             </div>
                         </div>
                     </div>
 
+                    {{!-- Módulo de Préstamos y Devoluciones (Sigue en Próximamente) --}}
                     <div class="col">
-                        <div class="card h-100 border-info">
-                            <div class="card-body text-center">
-                                <i class="fas fa-handshake fa-3x text-info mb-3"></i>
-                                <h5 class="card-title">Préstamos y Devoluciones</h5>
-                                <p class="card-text">Registro de operaciones transaccionales de libros.</p>
-                                <button class="btn btn-info mt-2" disabled>Próximamente</button>
-                            </div>
+                        <div class="card-option"
+                            style="border: 1px solid #007bff; border-radius: 8px; padding: 1rem; text-align: center; background-color: white;">
+                            <h4>Préstamos y Devoluciones</h4>
+                            <p>Registro de operaciones transaccionales de libros.</p>
+
+                            <!-- AQUÍ ESTÁ EL CAMBIO -->
+                            <a href="/loans" class="btn-action"
+                                style="background-color: #007bff; color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; display: inline-block; margin-top: 1rem;">
+                                Ir a Préstamos
+                            </a>
                         </div>
                     </div>
-
-                    </div>
+                </div>
             </div>
         </div>
     </div>

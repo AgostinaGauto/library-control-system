@@ -1,0 +1,53 @@
+<div class="container mt-4">
+  <h2 class="mb-4">📘 Detalle del Préstamo #{{prestamo.id_prestamo}}</h2>
+
+  <div class="card p-3 shadow-sm mb-4">
+    <p><strong>Socio:</strong> {{prestamo.socio.nomyape}}</p>
+    <p><strong>Fecha del préstamo:</strong> {{prestamo.fecha_prestamo}}</p>
+    <p><strong>Fecha de devolución:</strong> 
+      {{#if prestamo.fecha_devolucion}}
+        {{prestamo.fecha_devolucion}}
+      {{else}}
+        <span class="text-muted fst-italic">Pendiente</span>
+      {{/if}}
+    </p>
+  </div>
+
+  <h3 class="mt-4 mb-3">📚 Libros Prestados</h3>
+
+  <table class="table table-striped table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th>Título</th>
+        <th>Autor</th>
+        <th>Editorial</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each detalles}}
+        <tr>
+          <td>{{this.Libro.titulo}}</td>
+          <td>{{this.Libro.autor}}</td>
+          <td>{{this.Libro.editorial}}</td>
+          <td>
+            <span class="badge 
+              {{#eq this.Libro.estado 'en biblioteca'}}bg-success text-black{{/eq}}
+              {{#eq this.Libro.estado 'prestado'}}bg-warning text-dark{{/eq}}
+              {{#eq this.Libro.estado 'en reparación'}}bg-danger text-white{{/eq}}">
+              {{this.Libro.estado}}
+            </span>
+          </td>
+        </tr>
+      {{else}}
+        <tr>
+          <td colspan="4" class="text-center text-muted">No se encontraron libros asociados.</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  <a href="/loans" class="btn btn-secondary mt-4">
+    <i class="fas fa-arrow-left"></i> Volver al listado
+  </a>
+</div>

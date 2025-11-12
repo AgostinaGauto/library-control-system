@@ -1,5 +1,8 @@
 // CORRECCIÓN CLAVE: Usamos 'Libro' (Mayúscula) para referirnos al Modelo
 const Libro = require('../models/bookModel');
+// Importamos los errores de Sequelize para un manejo más preciso
+const { SequelizeValidationError, SequelizeUniqueConstraintError } = require('sequelize');
+
 const libroController = {}; // El objeto que contiene todas las funciones
 
 // 1. LISTAR LIBROS
@@ -32,31 +35,41 @@ libroController.renderNewForm = (req, res) => {
 
 // 3. CREAR LIBRO
 libroController.createBook = async (req, res) => {
-    const { titulo, autor, editorial, fecha_edicion, idioma, cant_paginas } = req.body;
+    // ACTUALIZACIÓN: Se incluye el campo 'autor' en la desestructuración de req.body
+    const { titulo, autor, editorial, fecha_edicion, idioma, cantPaginas } = req.body;
 
-    if (!titulo || !autor) {
-        req.flash('error_msg', 'El titulo y el autor son campos obligatorios.');
-        return res.redirect('/books/new');
-    }
+    // Objeto para los datos a crear
+    const newBookData = {
+        titulo,
+        autor, // ¡Campo Autor incluido!
+        editorial,
+        fecha_edicion,
+        idioma,
+        cantPaginas: cantPaginas ? parseInt(cantPaginas) : null // Asegura que sea entero o null
+    };
 
     try {
         // Usamos Libro (Modelo)
-        await Libro.create({
-            titulo,
-            autor,
-            editorial,
-            fecha_edicion,
-            idioma,
-            cant_paginas: cant_paginas ? parseInt(cant_paginas) : null
-        });
+        await Libro.create(newBookData);
 
-        // CORRECCIÓN: success_msg (estaba como succes_msg)
         req.flash('success_msg', 'Libro registrado exitosamente.');
         res.redirect('/books');
 
     } catch (error) {
         console.error('Error al crear el libro:', error);
-        req.flash('error_msg', 'Error interno al registrar el libro');
+        let errorMessages = 'Error interno al registrar el libro.';
+
+        // --- MANEJO DE ERRORES DE VALIDACIÓN DE SEQUELIZE ---
+        if (error.name === 'SequelizeValidationError') {
+            // Recopila todos los mensajes de error de validación
+            errorMessages = error.errors.map(err => err.message).join('<br>');
+            
+        } else if (error.name === 'SequelizeUniqueConstraintError') {
+            // Maneja errores específicos de unicidad (es buena práctica)
+            errorMessages = 'Error: Un libro con datos idénticos ya existe.';
+        }
+        
+        req.flash('error_msg', errorMessages);
         res.redirect('/books/new');
     }
 };
@@ -90,35 +103,45 @@ libroController.renderEditForm = async (req, res) => {
 // 5. ACTUALIZAR LIBRO
 libroController.updateBook = async (req, res) => {
     const { id } = req.params;
-    const { titulo, autor, editorial, fecha_edicion, idioma, cant_paginas, estado } = req.body;
+    // ACTUALIZACIÓN: Se incluye el campo 'autor' en la desestructuración de req.body
+    const { titulo, autor, editorial, fecha_edicion, idioma, cantPaginas, estado } = req.body;
 
-    if (!titulo || !autor) {
-        req.flash('error_msg', 'El titulo y el autor son campos obligatorios');
-        return res.redirect(`/books/edit/${id}`);
-    }
-
+    // Objeto para los datos a actualizar
+    const updatedBookData = {
+        titulo,
+        autor, // ¡Campo Autor incluido!
+        editorial,
+        fecha_edicion: fecha_edicion || null,
+        idioma,
+        cantPaginas: cantPaginas ? parseInt(cantPaginas) : null,
+        estado
+    };
+    
     try {
         // Usamos Libro (Modelo)
-        await Libro.update({
-            titulo,
-            autor,
-            editorial,
-            fecha_edicion: fecha_edicion || null,
-            idioma,
-            cant_paginas: cant_paginas ? parseInt(cant_paginas) : null,
-            estado
-        }, {
+        const [updatedRows] = await Libro.update(updatedBookData, {
             where: { id_libro: id }
         });
+
+        if (updatedRows === 0) {
+            req.flash('error_msg', 'Libro no encontrado o sin cambios para actualizar.');
+            return res.redirect('/books');
+        }
 
         req.flash('success_msg', 'Libro actualizado exitosamente.');
         res.redirect('/books');
 
     } catch (error) {
         console.error('Error al actualizar libro:', error);
-        req.flash('error_msg', 'Error interno al actualizar el libro.');
+        let errorMessages = 'Error interno al actualizar el libro.';
+        
+        // --- MANEJO DE ERRORES DE VALIDACIÓN DE SEQUELIZE ---
+        if (error.name === 'SequelizeValidationError') {
+            errorMessages = error.errors.map(err => err.message).join('<br>');
+        }
+        
+        req.flash('error_msg', errorMessages);
         res.redirect(`/books/edit/${id}`);
-
     }
 };
 
