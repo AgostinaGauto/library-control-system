@@ -1,0 +1,32 @@
+
+<div class="container mt-4">
+  <h2 class="mb-3">➕ Registrar Nueva Reparación</h2>
+
+  <form action="/repairs/add" method="POST" class="p-3 border rounded bg-light">
+
+    <div class="mb-3">
+      <label for="fecha_ingreso" class="form-label"> Fecha de Ingreso</label>
+      <input type="date" id="fecha_ingreso" name="fecha_ingreso" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="motivo" class="form-label"> Motivo de la reparación</label>
+      <textarea id="motivo" name="motivo" class="form-control" rows="3" placeholder="Describa el motivo..." required></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="cod_libro" class="form-label"> Libro</label>
+      <select id="cod_libro" name="cod_libro" class="form-select" required>
+        <option value="">Seleccione un libro disponible...</option>
+        {{#each libros}}
+          <option value="{{this.id_libro}}">{{this.titulo}}</option>
+        {{/each}}
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a href="/repairs" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+
+

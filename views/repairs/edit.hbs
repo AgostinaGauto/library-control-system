@@ -1,0 +1,32 @@
+
+<div class="container mt-4">
+  <h2 class="mb-3"> Editar Reparación</h2>
+
+  <form action="/repairs/edit/{{reparacion.id_reparacion}}" method="POST" class="p-3 border rounded bg-light">
+
+    <div class="mb-3">
+      <label class="form-label"> Libro</label>
+      <input type="text" class="form-control" value="{{#if reparacion.libro}}{{reparacion.libro.titulo}}{{else}}Libro no disponible{{/if}}" disabled>
+    </div>
+
+    <div class="mb-3">
+      <label for="motivo" class="form-label"> Motivo</label>
+      <textarea id="motivo" name="motivo" class="form-control" rows="3" required>{{reparacion.motivo}}</textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="fecha_ingreso" class="form-label"> Fecha Ingreso</label>
+      <input type="date" id="fecha_ingreso" name="fecha_ingreso" class="form-control" value="{{formatDateInput reparacion.fecha_ingreso}}" disabled>
+    </div>
+
+    <div class="mb-3">
+      <label for="fecha_egreso" class="form-label"> Fecha Egreso</label>
+      <input type="date" id="fecha_egreso" name="fecha_egreso" class="form-control" value="{{formatDateInput reparacion.fecha_egreso}}">
+      <div class="form-text">Si el libro aún no salió de reparación, puede dejar este campo vacío.</div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a href="/repairs" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+

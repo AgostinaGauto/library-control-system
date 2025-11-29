@@ -1,5 +1,3 @@
-////////////////////// ARCHIVO NUEVO ////////////////////////
-
 const Prestamo = require('../models/loanModel');
 const DetallePrestamo = require('../models/loanDetailModel');
 const Libro = require('../models/bookModel');
@@ -23,12 +21,33 @@ loanDetailController.loanDetail = async (req, res) => {
 
     // Buscar los libros asociados (detalle del préstamo)
     const detalles = await DetallePrestamo.findAll({
-      where: { id_prestamo: id }, // ✅ corregido nombre de la FK
-      include: [{ model: Libro, as: 'Libro' }]
+      where: { id_prestamo: id },
+      include: [
+        {
+          model: Libro,
+          as: 'libroPrestamo',  // Alias definido en associations
+          attributes: ['id_libro', 'titulo', 'autor', 'editorial', 'estado']
+        }
+      ]
     });
 
+    // Mapear los detalles para la vista y renombrar alias
+    const detallesFormateados = detalles.map(d => {
+      const detalle = d.get({ plain: true });
+      return {
+        ...detalle,
+        libro: detalle.libroPrestamo || {}  // alias accesible en la vista
+      };
+    });
+
+    // DEBUG: imprime los detalles en consola para verificar datos
+    console.log('Detalles formateados del préstamo:', JSON.stringify(detallesFormateados, null, 2));
+
     // Renderizar la vista con los datos
-    res.render('loans/loanDetail', { prestamo: prestamo.get({ plain: true }), detalles: detalles.map(d => d.get({ plain: true })) });
+    res.render('loans/loanDetail', {
+      prestamo: prestamo.get({ plain: true }),
+      detalles: detallesFormateados
+    });
   } catch (error) {
     console.error('Error al obtener detalle del préstamo:', error);
     res.status(500).send('Error al obtener los detalles del préstamo');
@@ -36,3 +55,4 @@ loanDetailController.loanDetail = async (req, res) => {
 };
 
 module.exports = loanDetailController;
+

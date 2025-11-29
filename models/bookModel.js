@@ -96,13 +96,13 @@ const Libro = sequelize.define('Libro', {
         }
     },
     estado: {
-        type: DataTypes.ENUM('en biblioteca', 'prestado', 'en reparación'),
+        type: DataTypes.ENUM('en biblioteca', 'prestado', 'en reparacion'),
         defaultValue: 'en biblioteca',
         allowNull: false, // Siempre OBLIGATORIO
         validate: {
             isIn: {
-                args: [['en biblioteca', 'prestado', 'en reparación']],
-                msg: 'El estado debe ser "en biblioteca", "prestado" o "en reparación".'
+                args: [['en biblioteca', 'prestado', 'en reparacion']],
+                msg: 'El estado debe ser "en biblioteca", "prestado" o "en reparacion".'
             }
         }
     }
@@ -110,5 +110,7 @@ const Libro = sequelize.define('Libro', {
     tableName: 'Libro',
     timestamps: false
 });
+
+
 
 module.exports = Libro;

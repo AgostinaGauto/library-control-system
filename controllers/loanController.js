@@ -42,7 +42,6 @@ loanController.createLoan = async (req, res) => {
     const t = await sequelize.transaction();
 
     try {
-        // Verificar que haya al menos un libro seleccionado
         if (!id_libros_array || (Array.isArray(id_libros_array) && id_libros_array.length === 0)) {
             throw new Error('Debe seleccionar al menos un libro para registrar el préstamo.');
         }
@@ -104,7 +103,7 @@ loanController.markAsReturned = async (req, res) => {
 
     try {
         const prestamo = await Prestamo.findByPk(id, {
-            include: { model: DetallePrestamo, as: 'detalles' },
+            include: { model: DetallePrestamo, as: 'detalles', include: { model: Libro, as: 'libroPrestamo' } },
             transaction: t
         });
 
@@ -112,12 +111,10 @@ loanController.markAsReturned = async (req, res) => {
             throw new Error('Préstamo no encontrado.');
         }
 
-        // Cambiar estado del préstamo
         prestamo.estado_prestamo = 'devuelto';
         prestamo.fecha_devolucion = new Date().toISOString().split('T')[0];
         await prestamo.save({ transaction: t });
 
-        // Marcar los libros como "en biblioteca"
         for (const detalle of prestamo.detalles) {
             await Libro.update(
                 { estado: 'en biblioteca' },
@@ -148,7 +145,7 @@ loanController.listLoans = async (req, res) => {
                 {
                     model: DetallePrestamo,
                     as: 'detalles',
-                    include: { model: Libro, as: 'Libro', attributes: ['titulo', 'autor', 'id_libro'] }
+                    include: { model: Libro, as: 'libroPrestamo', attributes: ['titulo', 'autor', 'id_libro'] } // ✅ alias corregido
                 }
             ],
             order: [['fecha_prestamo', 'DESC']]
@@ -158,7 +155,7 @@ loanController.listLoans = async (req, res) => {
             const plain = p.get({ plain: true });
             const nomyape_socio = plain.socio ? plain.socio.nomyape : 'N/A';
             const librosPrestados = plain.detalles.map(d =>
-                d.Libro ? `${d.Libro.titulo} (ID: ${d.Libro.id_libro})` : 'Libro no encontrado'
+                d.libroPrestamo ? `${d.libroPrestamo.titulo} (ID: ${d.libroPrestamo.id_libro})` : 'Libro no encontrado'
             ).join('; ');
 
             return {
